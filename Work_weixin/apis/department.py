@@ -55,3 +55,8 @@ class Department(WeWork):
         del_url = f'{self.base_url}/cgi-bin/user/delete?access_token={self.get_token()}'
         r = requests.get(del_url,params=param)
         return  r
+
+    def search_worker(self,data):
+        search_url = f'{self.base_url}/cgi-bin/user/list_id?access_token={self.get_token()}'
+        r = requests.post(search_url,json=data)
+        return r
