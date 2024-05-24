@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-import unittest
-import self
-import pytest
 from Work_weixin.apis.department import Department
 
 
@@ -44,17 +41,21 @@ class TestDepartments:
         assert r1.json().get('id') == self.depart_id
         #改
         r2 = self.department.update(self.update_data)
-        print('改改',r2.json())
+        print('update_json----',r2.json())
         #查
         rc = self.department.get_id(self.get_param)
-        print('chacha',rc.json())
+        print('search_json----',rc.json())
         ids = [i['id']for i in rc.json()['department_id']]
         assert self.depart_id in ids
         #删
         r = self.department.delete(self.del_param)
-        print('ssssssssssssssss',r.json())
+        print('del_json-------',r.json())
         assert r.json()["errcode"] == 0 and r.json()["errmsg"] == "deleted"
         rall = self.department.get_all()
         ids = [i['id'] for i in rall.json()['department_id']]
         assert self.depart_id not in ids
+
+    def test_crea(self):
+        r = self.department.creat(self.creat_data)
+        print(r.json())
 

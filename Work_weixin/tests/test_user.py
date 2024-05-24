@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-import unittest
-import self
-import pytest
 import allure
-from Work_weixin.apis.department import Department
+
+from Work_weixin.apis.work import Work
+
+
 @allure.feature('通讯录管理')
-class TestUser(unittest.TestCase):
-    def setUp(self):
-        self.department = Department()
+class TestUser:
+
+    def setup_method(self):
+        self.work = Work()
+
         # 准备测试数据
         # 新增员工信息
         self.createworker_data = {
@@ -92,6 +94,7 @@ class TestUser(unittest.TestCase):
         self.searchdata = {
             "limit": 10000
         }
+
     @allure.story('成员管理')
     @allure.title('测试员工管理--增/查/删')
     def test_work(self):
@@ -99,7 +102,7 @@ class TestUser(unittest.TestCase):
         测试员工管理--增/查/删
         '''
         with allure.step('增加用户'):
-            r1 = self.department.creat_worker(self.createworker_data)
+            r1 = self.work.creat_worker(self.createworker_data)
             print(r1.json())
         with allure.step('断言增加成功'):
             assert r1.json()['errcode'] == 0
@@ -107,7 +110,7 @@ class TestUser(unittest.TestCase):
         print('---------------------------------------')
         # 查询ID为test2的用户信息
         with allure.step('查询ID为test2的用户信息'):
-            r3 = self.department.search_worker(self.searchdata)
+            r3 = self.work.search_worker(self.searchdata)
             print(r3.json())
             ids = [i['userid'] for i in r3.json()['dept_user']]
         # {'errcode': 0, 'errmsg': 'ok', 'dept_user': [{'userid': 'test1', 'department': 2200}, {'userid': 'LiYuanRui', 'department': 1}, {'userid': 'momo12345', 'department': 1}]}
@@ -117,23 +120,29 @@ class TestUser(unittest.TestCase):
             assert self.search_user_id in ids
         print('---------------------------------------')
         with allure.step('删除用户test2'):
-            r2 = self.department.del_worker(self.delparama)
+            r2 = self.work.del_worker(self.delparama)
         print(r2.json())
         with allure.step('断言删除成功'):
             assert r2.json()['errcode'] == 0
             assert r2.json()['errmsg'] == 'deleted'
 
-        # 单调查询接口
+    def test_creat_userr(self):
+        r = self.work.creat_worker(self.createworker_data)
+        print(r.json())
+
+    # 单调查询接口
     def test_search_worker(self):
         # 查询ID为test2的用户信息
-        r3 = self.department.search_worker(self.searchdata)
+        r3 = self.work.search_worker(self.searchdata)
         print(r3.json())
         ids = [i['userid'] for i in r3.json()['dept_user']]
         # {'errcode': 0, 'errmsg': 'ok', 'dept_user': [{'userid': 'test1', 'department': 2200}, {'userid': 'LiYuanRui', 'department': 1}, {'userid': 'momo12345', 'department': 1}]}
         # ['test1', 'LiYuanRui', 'momo12345']
         # print(ids)
         assert self.search_user_id2 in ids
-#报告
+
+
+# 报告
 '''
 pytest -vs test_user.py --alluredir=./report --clean-alluredir
 allure serve ./reportallure serve ./report
